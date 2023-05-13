@@ -24,6 +24,7 @@ router.post("/user/signup", async (req, res) => {
       email: email,
       account: { username: username },
       password: password,
+      favorite: [],
     });
 
     const token = uid2(32);

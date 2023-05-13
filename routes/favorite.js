@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 router.post("/favorite/add", async (req, res) => {
   try {
-    console.log("oui");
+    // console.log("oui");
     const { userId, favoriteId } = req.body;
 
     const existUser = await User.findById({ _id: userId });
@@ -16,26 +16,31 @@ router.post("/favorite/add", async (req, res) => {
       await existUser.save();
       return res.json(existUser.favorite);
     } else {
-      //   console.log("favorite");
-      for (let i = 0; i <= existUser.favorite.length; i++) {
-        const favoriteCardExist = existUser.favorite[i].includes(favoriteId);
+      console.log(existUser.favorite.length);
+      //   for (let i = 1; i <= existUser.favorite.length; i = i + 1) {
+      //     console.log(i);
+      const favoriteCardExist = existUser.favorite.indexOf(favoriteId);
+      console.log("position " + favoriteCardExist);
 
-        if (favoriteCardExist) {
-          existUser.favorite.splice([i], 1);
-          console.log("before remove " + existUser.favorite);
-          await existUser.save();
-          console.log("after remove " + existUser.favorite);
-          return res.json(existUser.favorite);
-        } else {
-          console.log("before add " + existUser.favorite);
-          existUser.favorite.push(favoriteId);
-          await existUser.save();
-          console.log("after add " + existUser.favorite);
-          return res.json(existUser.favorite);
-        }
+      if (favoriteCardExist !== -1) {
+        console.log("delete");
+        existUser.favorite.splice(favoriteCardExist, 1);
+        //   console.log("before remove " + existUser.favorite);
+        await existUser.save();
+        //   console.log("after remove " + existUser.favorite);
+        return res.json(existUser.favorite);
+      } else if (favoriteCardExist === -1) {
+        console.log("add");
+        //   console.log("before add " + existUser.favorite);
+        existUser.favorite.push(favoriteId);
+        await existUser.save();
+        //   console.log("after add " + existUser.favorite);
+        return res.json(existUser.favorite);
       }
-      return;
+      //   }
     }
+
+    return;
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

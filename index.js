@@ -1,8 +1,8 @@
 const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
-const process = require("dotenv");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 app.use(express.json());
@@ -18,9 +18,7 @@ app.use(comicRoutes);
 app.use(userRoutes);
 app.use(favoriteRoutes);
 
-mongoose.connect(
-  "mongodb+srv://thibaulttrofleau:hiEdnxXWwGIiC3o6@cluster0.lhfrkhd.mongodb.net/Marvel"
-);
+mongoose.connect(process.env.MONGODB_URI);
 
 app.get("/", (req, res) => {
   try {
@@ -34,6 +32,6 @@ app.get("*", (req, res) => {
   res.status(404).json({ message: "Page not found 😢" });
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log("Server Started 🚀");
 });
